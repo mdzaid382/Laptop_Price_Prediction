@@ -2,9 +2,8 @@ import streamlit as st
 import numpy as np
 import pickle
 
-
-pipe = pickle.load(open('pipe.pkl','rb'))
-df = pickle.load(open('df.pkl','rb'))
+pipe = pickle.load(open('pipe.pkl_n','rb'))
+df = pickle.load(open('df.pkl_n','rb'))
 
 st.title("Laptop Price Prediction")
 
@@ -16,9 +15,6 @@ P_brand = st.selectbox("Processor brand",df['Processor_brand'].unique())
 
 #processor name 
 p_name = st.selectbox("Processor name",df['Processor_name'].unique())
-
-#processor generation
-p_gen = st.selectbox("Processor Generation",[1,3,4,5,6,7,8,9,10,11,12,13,14,'Apple'])
 
 #ram
 ram = st.selectbox("Ram",[2,4,6,8,12,16,32,64])
@@ -51,19 +47,18 @@ if st.button('Predict Price'):
     else:
         touchscreen = 0 
 
-    if p_gen=='Apple':
-        p_gen = 15
+   
     
     x_res = int(resolution.split('x')[0])
     y_res = int(resolution.split('x')[1])
     
     ppi = ((x_res**2)+(y_res**2))**0.5/scr_size
 
-    querry = [company,P_brand,p_name,p_gen,ram,ssd,gpu,scr_size,ppi,touchscreen,opsys]
+    querry = [company,P_brand,p_name,ram,ssd,gpu,scr_size,ppi,touchscreen,opsys]
 
     feature_list = np.array(querry,dtype=object)
 
-    feature_list = feature_list.reshape(1,11)
+    feature_list = feature_list.reshape(1,10)
 
     price = (int(np.exp(pipe.predict(feature_list)[0])))
     min_price = price - 5000
